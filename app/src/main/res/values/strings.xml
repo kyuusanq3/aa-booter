@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AA Booter</string>
+    <string name="start_head_unit_server">Start head unit server</string>
+</resources>
