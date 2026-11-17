@@ -1,20 +1,38 @@
 # AA Booter — install notes
 
-## Blocker: platform key missing on this machine
+## Platform signing (StarWin11)
 
-Searched for `platform.jks` / `platform.keystore` / `platform.pk8` / `platform.x509.pem` under common roots (`C:\Users\caleb`, `C:\dev`, `D:\`, `E:\`, agent stores). **Not found.**
+Official AOSP test keys only (`platform.pk8` + `platform.x509.pem` from `platform/build` `target/product/security/`) were converted locally to a JKS **outside** the repo:
 
-Expected signer SHA-256: `c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8`
+- Key dir: `C:\dev\keys\aosp-platform\` (`platform.jks` + source files; never commit)
+- Local config: gitignored `keystore.properties` (from `keystore.properties.example`)
 
-Per product rules: do not download a keystore, do not commit key material, do not sign with the debug keystore. Signed APK was **not** built.
+Verified fingerprints (JKS and release APK):
 
-## After the platform key is available
+- SHA-1: `27:19:6E:38:6B:87:5E:76:AD:F7:00:E7:EA:84:E4:C6:EE:E3:3D:FA`
+- SHA-256: `c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8`
 
-1. Verify SHA-256 with `keytool -list -v -keystore <file>`.
-2. Copy `keystore.properties.example` → `keystore.properties` and fill paths/passwords.
-3. `.\gradlew.bat assembleRelease`
-4. Install with the package installer (same path as `com.miniaa.launcher`), not as a priv-app:
-   `adb install -r app\build\outputs\apk\release\app-release.apk`
-5. Open **AA Booter** once and tap **Start head unit server** (clears stopped state for boot receivers; also the no-reboot test).
-6. Next ACC/boot: confirm Android Auto head-unit-server notification and that `127.0.0.1:5277` accepts a connection before Open Headunit starts.
-7. Logs: `adb logcat -s AaBooter` — look for start OK or `SecurityException`.
+Signed release APK (local build artifact; gitignored `*.apk`):
+
+`C:\dev\proj\aa-booter\app\build\outputs\apk\release\app-release.apk`
+
+## Install on the head unit
+
+1. Install with the package installer (same path as `com.miniaa.launcher`), not as a priv-app:
+
+   ```text
+   adb install -r app\build\outputs\apk\release\app-release.apk
+   ```
+
+2. Open **AA Booter** once and tap **Start head unit server** (clears stopped state for boot receivers; also the no-reboot test).
+3. Next ACC/boot: confirm Android Auto head-unit-server notification and that `127.0.0.1:5277` accepts a connection before Open Headunit starts.
+4. Logs: `adb logcat -s AaBooter` — look for start OK or `SecurityException`.
+
+## Rebuild on this machine
+
+```powershell
+# keystore.properties must already point at C:\dev\keys\aosp-platform\platform.jks
+.\gradlew.bat assembleRelease
+```
+
+Do not use the debug keystore. Do not commit `platform.*`, `.p12`, `.jks`, or `keystore.properties`.

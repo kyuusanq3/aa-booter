@@ -18,3 +18,5 @@ keystore.properties
 !app/src/**/*.pem
 /app/release/
 /app/build/
+
+*.p12
