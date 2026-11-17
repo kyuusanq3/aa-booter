@@ -12,6 +12,10 @@ import android.util.Log
 class BootCompletedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         Log.i(HeadUnitServerStarter.TAG, "BootCompletedReceiver action=${intent?.action}")
+        if (!BootSettings.isStartOnBoot(context)) {
+            Log.i(HeadUnitServerStarter.TAG, "Start on boot is off")
+            return
+        }
         HeadUnitServerStarter.start(context.applicationContext)
     }
 }
