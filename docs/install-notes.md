@@ -26,8 +26,9 @@ Signed release APK (local build artifact; gitignored `*.apk`):
 
 2. Open **AA Booter**. The screen shows whether the head unit server is already running (it checks for a listener on port 5277).
 3. **Head unit server** turns the server on or off now. **Start when the head unit boots** is on by default; turn it off to skip the next boot.
-4. **Check for updates** looks at the latest GitHub release and can download `aa-booter.apk` for the package installer.
-5. Logs: `adb logcat -s AaBooter` — look for start OK or `SecurityException`.
+4. **Restart hotspot after boot** is on by default. About 90 seconds after power-on it turns the hotspot off and back on at 2.4 GHz, then starts the head unit server again. **Restart hotspot now** runs that bounce without rebooting. The T9 must already have that SSID saved.
+5. **Check for updates** looks at the latest GitHub release and can download `aa-booter.apk` for the package installer.
+6. Logs: `adb logcat -s AaBooter` — look for start OK, `Hotspot restarted`, or `SecurityException`.
 
 ## Rebuild on this machine
 

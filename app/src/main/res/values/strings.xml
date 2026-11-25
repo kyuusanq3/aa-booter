@@ -3,6 +3,10 @@
     <string name="app_name">AA Booter</string>
     <string name="head_unit_server">Head unit server</string>
     <string name="start_on_boot">Start when the head unit boots</string>
+    <string name="restart_hotspot_on_boot">Restart hotspot after boot</string>
+    <string name="restart_hotspot_now">Restart hotspot now</string>
+    <string name="hotspot_restarting">Restarting hotspot…</string>
+    <string name="hotspot_channel">Hotspot restart</string>
     <string name="server_checking">Checking head unit server…</string>
     <string name="server_running">Head unit server is running</string>
     <string name="server_stopped">Head unit server is stopped</string>

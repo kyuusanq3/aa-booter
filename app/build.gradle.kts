@@ -21,8 +21,8 @@ android {
         applicationId = "com.kyuusanq3.aabooter"
         minSdk = 26
         targetSdk = 33
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 4
+        versionName = "1.0.3"
     }
 
     buildFeatures {

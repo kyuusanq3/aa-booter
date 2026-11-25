@@ -28,12 +28,14 @@ class MainActivity : Activity() {
     private lateinit var serverSwitch: Switch
     private lateinit var updateStatus: TextView
     private lateinit var updateAction: Button
+    private lateinit var hotspotDetail: TextView
 
     private var ignoreSwitch = false
     private var holdSwitchUntil = 0L
     private var pendingStart: Boolean? = null
     private var downloadedApk: File? = null
     private var busy = false
+    private var hotspotBusy = false
     private var destroyed = false
 
     private val statusPoll = Runnable { refreshServerStatus() }
@@ -54,6 +56,15 @@ class MainActivity : Activity() {
         bootSwitch.isChecked = BootSettings.isStartOnBoot(this)
         bootSwitch.setOnCheckedChangeListener { _, checked ->
             BootSettings.setStartOnBoot(this, checked)
+        }
+        val hotspotSwitch = findViewById<Switch>(R.id.hotspot_switch)
+        hotspotSwitch.isChecked = BootSettings.isRestartHotspotOnBoot(this)
+        hotspotSwitch.setOnCheckedChangeListener { _, checked ->
+            BootSettings.setRestartHotspotOnBoot(this, checked)
+        }
+        hotspotDetail = findViewById(R.id.hotspot_detail)
+        findViewById<Button>(R.id.restart_hotspot_button).setOnClickListener {
+            restartHotspotNow()
         }
         serverSwitch.setOnCheckedChangeListener { _, checked ->
             if (ignoreSwitch) return@setOnCheckedChangeListener
@@ -139,6 +150,19 @@ class MainActivity : Activity() {
             serverDetail.text == getString(R.string.server_stopping)
         ) {
             serverDetail.text = ""
+        }
+    }
+
+    private fun restartHotspotNow() {
+        if (hotspotBusy) return
+        hotspotBusy = true
+        hotspotDetail.setText(R.string.hotspot_restarting)
+        io.execute {
+            val result = HotspotRestarter.restart(applicationContext)
+            onUi {
+                hotspotBusy = false
+                hotspotDetail.text = result.detail
+            }
         }
     }
 

@@ -6,16 +6,22 @@ import android.content.Intent
 import android.util.Log
 
 /**
- * Starts Android Auto's head unit server on boot, then returns.
- * Does not keep a process running beyond the start call.
+ * Starts Android Auto's head unit server on boot, and schedules the late
+ * hotspot bounce. The bounce waits until the radio has finished starting.
  */
 class BootCompletedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         Log.i(HeadUnitServerStarter.TAG, "BootCompletedReceiver action=${intent?.action}")
-        if (!BootSettings.isStartOnBoot(context)) {
+        val app = context.applicationContext
+        if (BootSettings.isStartOnBoot(app)) {
+            HeadUnitServerStarter.start(app)
+        } else {
             Log.i(HeadUnitServerStarter.TAG, "Start on boot is off")
-            return
         }
-        HeadUnitServerStarter.start(context.applicationContext)
+        if (BootSettings.isRestartHotspotOnBoot(app)) {
+            HotspotBoot.schedule(app)
+        } else {
+            Log.i(HeadUnitServerStarter.TAG, "Hotspot restart on boot is off")
+        }
     }
 }
